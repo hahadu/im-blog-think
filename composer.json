@@ -1,0 +1,33 @@
+{
+    "name": "hahadu/im-admin-think",
+    "description": "thinkphpAdmin后台管理模块",
+    "type": "think-extend",
+    "keywords": [
+        "framework",
+        "thinkphp",
+        "blog",
+        "article"
+    ],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "hahadu",
+            "email": "582167246@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "hahadu/im-admin-think": "^1.0"
+    },
+    "require-dev": {
+        "php": ">=7.0"
+
+    },
+    "autoload": {
+        "files": ["src/helper.php"],
+        "psr-4": {
+            "Hahadu\\ImBlogThink\\": "src/"
+        }
+    },
+        "minimum-stability": "dev"
+}
