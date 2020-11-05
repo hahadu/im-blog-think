@@ -28,6 +28,7 @@ use think\model\concern\SoftDelete;
 class Blog extends BaseModel
 {
     use SoftDelete;
+    protected $createTime = 'create_time';
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = NULL;
 
@@ -109,9 +110,7 @@ class Blog extends BaseModel
                 );
             }
             //获取分页数据
-            $list=$this::where($where)
-                ->order('create_time','desc')
-                ->paginate($limit);
+            $list=$this->getPageBlogList($where,$limit);
             $extend=array(
                 'type'=>'index',
                 'id'=>0
@@ -127,11 +126,8 @@ class Blog extends BaseModel
                     'a.is_show'=>$is_show
                 );
             }
-            $list=BlogTag::alias('at')
-                ->join('blog a','at.aid=a.id')
-                ->where($where)
-                ->order('a.create_time','desc')
-                ->paginate($limit);
+            $list=$this->blog_tag
+                ->getPageBlogList($where,$limit);
             $extend=array(
                 'type'=>'tid',
                 'id'=>$tid
@@ -148,9 +144,8 @@ class Blog extends BaseModel
                     'is_show'=>$is_show
                 );
             }
-            $list=$this::where($where)
-                ->order('create_time','desc')
-                ->paginate($limit);
+            $list=$this
+                ->getPageBlogList($where,$limit);
             $extend=array(
                 'type'=>'cid',
                 'id'=>$cid
@@ -242,6 +237,56 @@ class Blog extends BaseModel
             return $this->where($where)->order('create_time','desc')->select();
         }
     }
+    public function deleteData($map, $type = false)
+    {
+        if($type==true){
+            $d_aid = [
+                'aid'=>$map['id']
+            ];
+            $this->blog_pic->deleteData($d_aid);
+            $this->blog_tag->deleteData($d_aid);
+        }
+        return parent::deleteData($map, $type);
+    }
+
+    protected function getPageBlogList($where,$limit){
+        return $this::where($where)
+            ->order('create_time','desc')
+            ->paginate($limit);
+    }
+
+
+    // 修改数据
+    public function editData($map,$data){
+        if($this->create($data)){
+            $id=$data['id'];
+            $this->where(array('id'=>$id))->save();
+            $image_path=get_ueditor_image_path($data['content']);
+            $this->blog_tag->deleteData($id);
+            if(isset($data['tids'])){
+                $this->blog_tag->addData($id,$data['tids']);
+            }
+            // 删除图片路径
+            $this->blog_pic->deleteData($id);
+            if(!empty($image_path)){
+/*
+                //设置水印
+                if(config('image.water')!=0){
+                    foreach ($image_path as $k => $v) {
+                        add_water('.'.$v);
+                    }
+                }
+*/
+                // 添加新图片路径
+                $this->blog_pic->addData($id,$image_path);
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 
 
 

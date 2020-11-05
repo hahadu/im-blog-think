@@ -23,17 +23,17 @@ class Tag extends BaseModel
 {
     // 添加标签
     public function addData($post){
-        $str=$post['tname'];
-        if(empty($str)){
+        $tname=$post['tname'];
+        if(empty($tname)){
             return '标签名不能为空';
         }else{
-            $str=nl2br(trim($str));
-            $tnames=explode("<br />", $str);
+            $tname=nl2br(trim($tname));
+            $tnames=explode(",", $tname);
             foreach ($tnames as $k => $v) {
                 $v=trim($v);
                 if(!empty($v)){
                     $data['tname']=$v;
-                    $this->save($data);
+                    $this::create($data);
                 }
             }
             return true;
@@ -77,7 +77,7 @@ class Tag extends BaseModel
     public function getAllData(){
         $data=$this::select();
         foreach ($data as $k => $v) {
-            $data[$k]['count']= \Hahadu\ImBlogThink\Models\BlogTag::where(array('tid'=>$v['tid']))->count();
+            $data[$k]['count']= BlogTag::where(array('tid'=>$v['tid']))->count();
         }
         return $data;
     }

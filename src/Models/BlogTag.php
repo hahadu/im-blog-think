@@ -11,18 +11,19 @@
  *  +----------------------------------------------------------------------
  *  | Date: 2020/10/24 上午1:01
  *  +----------------------------------------------------------------------
- *  | Description:   Blog
+ *  | Description:   BlogTag
  *  +----------------------------------------------------------------------
  **/
 
 namespace Hahadu\ImBlogThink\Models;
 use Hahadu\ThinkBaseModel\BaseModel;
 use think\facade\Db;
-use think\Model;
 
 
-class BlogTag extends Model
+class BlogTag extends BaseModel
 {
+    protected $createTime = 'create_time';
+    protected $autoWriteTimestamp = true;
     public function getDataByAid($aid,$field='true'){
         if($field=='all'){
             return Db::name('BlogTag')
@@ -33,6 +34,19 @@ class BlogTag extends Model
         }else{
             return $this::where(array('aid'=>$aid))->column('tid');
         }
+    }
+
+    /****
+     * 获取带分页的文章数据
+     * @param $where
+     * @param $limit
+     */
+    public function getPageBlogList($where,$limit){
+        return $this::alias('at')
+            ->join('blog a','at.aid=a.id')
+            ->where($where)
+            ->order('a.create_time','desc')
+            ->paginate($limit);
     }
 
 

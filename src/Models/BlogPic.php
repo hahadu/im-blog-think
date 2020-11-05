@@ -11,16 +11,16 @@
  *  +----------------------------------------------------------------------
  *  | Date: 2020/10/24 上午9:01
  *  +----------------------------------------------------------------------
- *  | Description:   Blog
+ *  | Description:   BlogPic
  *  +----------------------------------------------------------------------
  **/
 
 namespace Hahadu\ImBlogThink\Models;
 
 
-use think\Model;
+use Hahadu\ThinkBaseModel\BaseModel;
 
-class BlogPic extends Model
+class BlogPic extends BaseModel
 {
     // 传递aid获取第一条数据作为文章的封面图片
     public function getDataByAid($aid){
