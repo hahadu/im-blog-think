@@ -31,6 +31,23 @@ class BlogPic extends BaseModel
             ->select();
         return $data[0]['path'];
     }
+    /**
+     * 添加数据
+     * @param strind $aid 文章id
+     * @param array $image_path 图片路径
+     */
+    public function addData($data){
+        $image_path = $data['image_path'];
+        $aid = $data['aid'];
+        foreach ($image_path as $k => $v) {
+            $pic_data=array(
+                'aid'=>$aid,
+                'path'=>$v,
+            );
+            $this->save($pic_data);
+        }
+        return true;
+    }
 
 
 }

@@ -49,5 +49,22 @@ class BlogTag extends BaseModel
             ->paginate($limit);
     }
 
+    /**
+     * 添加数据
+     * @param string $aid 文章id
+     * @param array $tids 标签id
+     */
+    public function addData($data){
+        $aid = $data['aid'];
+        $tids = $data['tids'];
+        foreach ($tids as $k => $v) {
+            $tag_data=array(
+                'aid'=>$aid,
+                'tid'=>$v,
+            );
+            $this->add($tag_data);
+        }
+        return true;
+    }
 
 }

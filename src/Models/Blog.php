@@ -52,7 +52,7 @@ class Blog extends BaseModel
             $data['tag']=$this->blog_tag->getDataByAid($id,'all');
             $data['category']=current($this->category->getDataByCid($data['cid'],'cid,cid,cname,keywords'));
             // 获取相对路径的图片地址
-            $data['content']=preg_ueditor_image_path($data['content']);
+            $data['content']=preg_editor_image_path($data['content']);
         }else{
             if(isset($map['tid'])){
                 // 根据此标签tid获取上下篇文章
@@ -95,7 +95,7 @@ class Blog extends BaseModel
             $data['current']['tids']=$this->blog_tag->getDataByAid($id);
             $data['current']['tag']=$this->blog_tag->getDataByAid($id,'all');
             $data['current']['category']=current($this->category->getDataByCid($data['current']['cid'],'cid,cid,cname,keywords'));
-            $data['current']['content']=preg_ueditor_image_path($data['current']['content']);
+            $data['current']['content']=preg_editor_image_path($data['current']['content']);
         }
         return $data;
     }
@@ -156,7 +156,7 @@ class Blog extends BaseModel
             $list[$k]['tag']=$this->blog_tag->getDataByAid($v['id'],'all')->toArray();
             $list[$k]['pic_path']=$this->blog_pic->getDataByAid($v['id']);
             $list[$k]['category']=current($this->category->getDataByCid($v['cid'],'cid,cid,cname'));
-            $v['content']=preg_ueditor_image_path($v['content']);
+            $v['content']=preg_editor_image_path($v['content']);
             $list[$k]['content']=htmlspecialchars($v['content']);
             $list[$k]['url']=url('/blog/index/detail',array('id'=>$v['id']));
             $list[$k]['extend']=$extend;
@@ -259,26 +259,26 @@ class Blog extends BaseModel
     // 修改数据
     public function editData($map,$data){
         if($this->create($data)){
-            $id=$data['id'];
-            $this->where(array('id'=>$id))->save();
-            $image_path=get_ueditor_image_path($data['content']);
-            $this->blog_tag->deleteData($id);
+            $id=$map['id'];
+            $this->where($map)->save();
+            $image_path=get_editor_image_path($data['content']);
+            $this->blog_tag->deleteData($map['id']);
             if(isset($data['tids'])){
-                $this->blog_tag->addData($id,$data['tids']);
+                $tag_data = [
+                    'aid' => $id,
+                    'tids'=>$data['tids'],
+                ];
+                $this->blog_tag->addData($tag_data);
             }
             // 删除图片路径
             $this->blog_pic->deleteData($id);
             if(!empty($image_path)){
-/*
-                //设置水印
-                if(config('image.water')!=0){
-                    foreach ($image_path as $k => $v) {
-                        add_water('.'.$v);
-                    }
-                }
-*/
+                $pic_data = [
+                    'aid' => $id,
+                    'tids'=>$data['tids'],
+                ];
                 // 添加新图片路径
-                $this->blog_pic->addData($id,$image_path);
+                $this->blog_pic->addData($pic_data);
             }
             return true;
         }else{
