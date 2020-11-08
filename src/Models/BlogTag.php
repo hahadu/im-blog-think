@@ -51,8 +51,6 @@ class BlogTag extends BaseModel
 
     /**
      * 添加数据
-     * @param string $aid 文章id
-     * @param array $tids 标签id
      */
     public function addData($data){
         $aid = $data['aid'];
@@ -62,9 +60,13 @@ class BlogTag extends BaseModel
                 'aid'=>$aid,
                 'tid'=>$v,
             );
-            $this->add($tag_data);
+            $this::create($tag_data);
         }
         return true;
+    }
+    public function deleteData($map, $type = false)
+    {
+        return $this::where($map)->delete();
     }
 
 }

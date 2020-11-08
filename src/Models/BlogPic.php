@@ -29,7 +29,9 @@ class BlogPic extends BaseModel
             ->order('ap_id','asc')
             ->limit(1)
             ->select();
-        return $data[0]['path'];
+        if(isset($data[0])){
+            return $data[0]['path'];
+        }
     }
     /**
      * 添加数据
@@ -44,10 +46,11 @@ class BlogPic extends BaseModel
                 'aid'=>$aid,
                 'path'=>$v,
             );
-            $this->save($pic_data);
+            $this::create($pic_data);
         }
         return true;
     }
+
 
 
 }

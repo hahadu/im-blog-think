@@ -24,6 +24,7 @@ use Hahadu\Helper\DateHelper;
 use Hahadu\DataHandle\Data;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
+use Hahadu\Helper\StringHelper;
 
 class Blog extends BaseModel
 {
@@ -255,14 +256,28 @@ class Blog extends BaseModel
             ->paginate($limit);
     }
 
-
     // 修改数据
     public function editData($map,$data){
-        if($this->create($data)){
-            $id=$map['id'];
-            $this->where($map)->save();
-            $image_path=get_editor_image_path($data['content']);
-            $this->blog_tag->deleteData($map['id']);
+        $id=$map['id'];
+        // 反转义为下文的 preg_replace使用
+        $data['content']=htmlspecialchars_decode($data['content']);
+        // 判断是否修改文章中图片的默认的alt 和title
+        if(true==config('blog.replace_image_attr')){
+            // 修改图片默认的title和alt
+            $data['content']=preg_replace('/title=\"(?<=").*?(?=")\"/','title='.config('blog.default_image_title'),$data['content']);
+            $data['content']=preg_replace('/alt=\"(?<=").*?(?=")\"/','alt='.config('blog.default_image_alt'),$data['content']);
+        }
+        // 转换路径
+        if(empty($data['image_path'])){
+            $data['image_path']=StringHelper::get_all_pic($data['content']);
+        }
+
+        $data['content']=preg_replace('/src=\"^\/.*\/Upload\/images$/','src="/Upload/images',$data['content']);
+        $data['content']=htmlspecialchars($data['content']);
+
+        if($this::update($data,$map)){
+            $aid= ['aid'=>$id];
+            $this->blog_tag::where($aid)->delete();
             if(isset($data['tids'])){
                 $tag_data = [
                     'aid' => $id,
@@ -270,22 +285,80 @@ class Blog extends BaseModel
                 ];
                 $this->blog_tag->addData($tag_data);
             }
-            // 删除图片路径
-            $this->blog_pic->deleteData($id);
-            if(!empty($image_path)){
-                $pic_data = [
-                    'aid' => $id,
-                    'tids'=>$data['tids'],
-                ];
-                // 添加新图片路径
-                $this->blog_pic->addData($pic_data);
-            }
-            return true;
+            $this->blog_pic->deleteData(['aid'=>$id]);
+            $pic_data = [
+                'aid' => $id,
+                'image_path'=> $data['image_path']
+            ];
+            //添加新图片路径
+            $this->blog_pic->addData($pic_data);
+            return 100011;
         }else{
-            return false;
+            return 420011;
         }
     }
 
+    //添加数据
+    public function addData($data){
+        // 获取post数据
+        // 反转义为下文的 preg_replace使用
+        $data['content']=htmlspecialchars_decode($data['content']);
+        // 判断是否修改文章中图片的默认的alt 和title
+        if(true==config('blog.replace_image_attr')){
+            // 修改图片默认的title和alt
+            $data['content']=preg_replace('/title=\"(?<=").*?(?=")\"/','title='.config('blog.default_image_title'),$data['content']);
+            $data['content']=preg_replace('/alt=\"(?<=").*?(?=")\"/','alt='.config('blog.default_image_alt'),$data['content']);
+        }
+        if(empty($data['image_path'])) {
+            //文章图片
+            $data['image_path'] = StringHelper::get_all_pic($data['content']);
+        }
+        // 将绝对路径转换为相对路径
+        $data['content']=preg_replace('/src=\"^\/.*\/Upload\/images$/','src="/Upload/images',$data['content']);
+        // 转义
+        $data['content']=htmlspecialchars($data['content']);
+
+        if($blog_add= $this::create($data)){
+            if($id=$blog_add->id){
+                if(isset($data['tids'])){
+                    $tag_data = [
+                        'aid' => $id,
+                        'tids'=>$data['tids'],
+                    ];
+                    $this->blog_tag->addData($tag_data);
+                }
+                if(!empty($data['image_path'])){
+                    $pic_data = [
+                        'aid' => $id,
+                        'image_path'=> $data['image_path']
+                    ];
+                    //添加图片路径
+                    $this->blog_pic->addData($pic_data);
+                }
+                // 获取未删除和展示的文章
+                $sitemap_map=array(
+                    'is_show'=>1,
+                );
+                $list=$this::field('id,update_time')
+                    ->where($sitemap_map)
+                    ->order('create_time desc')
+                    ->select();
+                // 生成sitemap文件
+                $sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<urlset>\r\n";
+                foreach($list as $k=>$v){
+                    $sitemap .= "    <url>\r\n"."        <loc>".url('Home/Index/article',array('id'=>$v['id']),'',true)."</loc>\r\n"."        <lastmod>".$v['create_time']."</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
+                }
+                $sitemap .= '</urlset>';
+                file_put_contents('./sitemap.xml',$sitemap);
+                return 100012;
+            }else{
+                return 420001;
+            }
+        }else{
+            return 420002;
+        }
+
+    }
 
 
 
