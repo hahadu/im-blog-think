@@ -16,12 +16,14 @@
  **/
 
 namespace Hahadu\ImBlogThink\Models;
+use Hahadu\ImAdminThink\model\Users;
 use Hahadu\ImBlogThink\Models\BlogTag;
 use Hahadu\ImBlogThink\Models\BlogPic;
 use Hahadu\ImBlogThink\Models\Category;
 use Hahadu\ThinkBaseModel\BaseModel;
 use Hahadu\Helper\DateHelper;
 use Hahadu\DataHandle\Data;
+use think\Exception;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
 use Hahadu\Helper\StringHelper;
@@ -36,16 +38,26 @@ class Blog extends BaseModel
     protected $blog_tag;
     protected $blog_pic;
     protected $category;
+    protected $user;
+
     public function __construct(array $data = [])
     {
         $this->blog_pic = new BlogPic();
         $this->blog_tag = new BlogTag();
         $this->category = new Category();
+        $this->user = new Users();
         parent::__construct($data);
 
     }
+    public function users(){
+        return $this->hasOne(Users::class, 'id','author')
+            ->field('username,email')
+            ->bind(['username'])
+            ;
+    }
     // 传递id获取单条全部数据 $map 主要为前台页面上下页使用
     public function getDataById($id,$map=''){
+
         if($map==''){
             // $map 为空则不获取上下篇文章
             $data=$this->where(array('id'=>$id))->find();
@@ -97,6 +109,7 @@ class Blog extends BaseModel
             $data['current']['tag']=$this->blog_tag->getDataByAid($id,'all');
             $data['current']['category']=current($this->category->getDataByCid($data['current']['cid'],'cid,cid,cname,keywords'));
             $data['current']['content']=preg_editor_image_path($data['current']['content']);
+            $data['current']['username']=$data['current']->hidden(['users'])->users->username;
         }
         return $data;
     }
@@ -178,10 +191,16 @@ class Blog extends BaseModel
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function hotArticle($limit=10){
-       return $this::field('id,title,author,create_time')
-            ->order('click','desc')
-            ->limit($limit)
-            ->select();
+       $hot =  $this::field('id,title,author,create_time')
+           ->withJoin('users','LEFT')
+           ->hidden(['users'])
+           ->order('click','desc')
+           ->limit($limit)
+           ->select();
+/*       foreach ($hot as $k=>$v){
+           $hot[$k]['username']=$v->hidden(['users'])->users->username;
+       }*/
+       return $hot;
     }
 
     /****
@@ -195,18 +214,24 @@ class Blog extends BaseModel
         $map=array(
             'is_show'=>1,
             'is_top'=>1,
-    //        'delete_time'=>null,
         );
         $recommend = $this::field('id,title,author,create_time')
+            ->alias('a')
+            ->withJoin('users','LEFT')
+            ->hidden(['users'])
+
             ->where($map)
             ->order('id','desc')
             ->select();
+
         return $recommend;
+
     }
 
     // 传递搜索词获取数据
     public function getDataByTitle($search){
-        $list=$this
+        $list=$this::withJoin('users','LEFT')
+            ->hidden(['users'])
             ->whereLike('title',"%$search%")
             ->order('create_time','desc')
             ->paginate(10);
@@ -251,7 +276,9 @@ class Blog extends BaseModel
     }
 
     protected function getPageBlogList($where,$limit){
-        return $this::where($where)
+        return $this::withJoin('users','LEFT')
+            ->hidden(['users'])
+            ->where($where)
             ->order('create_time','desc')
             ->paginate($limit);
     }

@@ -20,6 +20,7 @@ use Hahadu\Helper\StringHelper;
 use Hahadu\ImAdminThink\controller\AdminBaseController;
 use Hahadu\ImBlogThink\Models\Blog;
 use Hahadu\ImBlogThink\Models\Category;
+use Hahadu\ImBlogThink\Models\Comment;
 use Hahadu\ImBlogThink\Models\Tag;
 use think\App;
 
@@ -28,12 +29,15 @@ class BaseBlogAdminBlogController extends AdminBaseController
     protected $blog;
     protected $category;
     protected $tag;
+    protected $comment;
     public function __construct(App $app)
     {
         parent::__construct($app);
         $this->blog = new Blog();
         $this->category = new Category();
         $this->tag = new Tag();
+        $this->comment = new Comment();
+
     }
 
     /****
@@ -66,6 +70,9 @@ class BaseBlogAdminBlogController extends AdminBaseController
         // 获取post数据
         // 反转义为下文的 preg_replace使用
         $data['content']=htmlspecialchars_decode($data['content']);
+        if(isset($data['author'])){
+            $data['author'] = get_user('id');
+        }
         // 判断是否修改文章中图片的默认的alt 和title
         if(true==config('blog.replace_image_attr')){
             // 修改图片默认的title和alt
@@ -80,6 +87,14 @@ class BaseBlogAdminBlogController extends AdminBaseController
         // 转义
         $data['content']=htmlspecialchars($data['content']);
         return $this->blog->addData($data);
+    }
+
+    /****
+     * @return mixed 已删除的文章列表
+     */
+    public function on_delete(){
+        $delete_list  = $this->blog->selectDelData();
+        return $delete_list;
     }
 
     /****
@@ -111,7 +126,6 @@ class BaseBlogAdminBlogController extends AdminBaseController
             'categorys' => $allCategory,
             'tags' => $allTag,
         ];
-
     }
 
     /****
@@ -127,6 +141,18 @@ class BaseBlogAdminBlogController extends AdminBaseController
             'data' => $data,
             'categorys' => $allCategory,
             'tags' => $allTag,
+        ];
+    }
+
+    /****
+     * @return array
+     */
+    public function info(){
+        return [
+            'all_blog'=>$this->blog->getCountData(), //文章总数
+            'delete_blog'=>$this->blog->getCountData([],true), //删除的文章数量
+            'hide_blog'=>$this->blog->getCountData(["is_show"=>0]), //隐藏的文章数量
+            'all_comment'=>$this->comment->count(),
         ];
     }
 
