@@ -52,9 +52,3 @@ if(!function_exists('preg_editor_image_path')){
         return $data;
     }
 }
-if(!function_exists('ueditor')){
-    function ueditor(){
-        $ueditor = new ThinkUeditor();
-        return $ueditor->ueditor();
-    }
-}
