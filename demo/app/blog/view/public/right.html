@@ -1,0 +1,85 @@
+<div id="sidebar">
+    <form method="get" action="{:url('/blog/index/search')}">
+        <input type="text" name="search" placeholder="Search" class="search" />
+    </form>
+<div class="widget">
+    <h5>文章分类</h5>
+    <ul class="categories">
+        {foreach $categorys as $key=>$vo}
+        <li><a href="{:url('/blog/index/category',['cid'=>$vo.cid])}">{$vo.cname}</a></li>
+        {/foreach}
+    </ul>
+    {foreach $categorys as $key=>$vo}
+    <div class="accordion-button first"><a href="{:url('/blog/index/category',['cid'=>$vo.cid])}">{$vo.cname}</a></div>
+    <div class="accordion-content">
+        <li><a href="{:url('/blog/index/category',['cid'=>$vo.cid])}">测试子分类</a></li>
+    </div>
+    {/foreach}
+
+</div>
+<div class="widget">
+    <h5>心语</h5>
+    <p>生而知之者上也;学而知之者次也;困而学之又其次也;困而不学,民斯为下矣</p>
+</div>
+<div class="widget">
+    <h5>榜单</h5>
+    <ul id="tabs">
+        <li class="active"><a href="#tab1">最多阅读</a></li>
+        <li><a href="#tab2">最新评论</a></li>
+    </ul>
+    <div id="tabs_content_container">
+        <div id="tab1" class="tab-content">
+            {foreach $hot_article as $key=>$vo}
+            <ul class="posts">
+                <li>
+                    <a href="JavaScript:;"><img src="" alt="" />{$vo.username}</a>
+                    <div class="entry">
+                        <a href="{:url('/blog/index/detail',['id'=>$vo.id])}">{$vo.title}</a>
+                        <span class="date">{$vo.create_time}</span>
+                    </div>
+                </li>
+            </ul>
+            {/foreach}
+        </div>
+        <div id="tab2" class="tab-content">
+            {foreach $new_comment as $key=>$vo}
+            <ul class="posts">
+                <li>
+                    <a href="javascript:;"><img src="/upload/avatar/{$vo.avatar}" alt="{$vo.username}" /></a>
+                    <a href="{$vo.url}">{$vo.title}</a>
+                    <div class="entry">
+                        {$vo.username}:
+                        <a href="{$vo.url}">{:$vo.content}</a>
+                        <span class="date">{$vo.date}</span>
+                    </div>
+                </li>
+            </ul>
+            {/foreach}
+        </div>
+    </div>
+</div>
+
+    <div class="widget">
+        <h5>博主推荐</h5>
+        <ul class="categories">
+            {foreach $recommend as $key=>$vo}
+            <li><a href="{:url('/blog/index/detail',['id'=>$vo.id])}">{$vo.title}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+<div class="widget">
+    <h5>tags</h5>
+    <div class="post-meta">
+        {foreach $tags as $k=>$v}
+            <li class="tags"><a href="{:url('/blog/index/tag',['tid'=>$v.tid])}">{$v.tname}</a></li>
+        {/foreach}
+    </div>
+</div>
+<div class="widget">
+    <h5>新用户</h5>
+    <ul class="photo-stream">
+        <li><a href="JavaScript:;"><img src="__BLOG_STATIC__/images/content/photo_stream_01.jpg" alt="" /></a></li>
+    </ul>
+</div>
+<!-- /Photo Stream -->
+</div>

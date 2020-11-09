@@ -1,0 +1,29 @@
+{extend name="public/base" /}
+
+{block name="main"}
+<h1 class="page-title-inner"><span class="section-title">HAHADU</span> 炊烟寥寥升起<br />  <span class="accent">加班到夜里</span></h1>
+{foreach $list as $key=>$vo}
+<div class="post clearfix">
+    <a href="{$vo.url}"><h2>{$vo.title}</h2></a>
+    <ul class="post-meta">
+        <li class="author">By <a href="javascript:;">{$vo.username}</a></li>
+        <li class="date">{$vo.create_time}</li>
+        <li class="tags">
+        {foreach $vo.tag as $k=>$v}
+            <a href="{:url('/blog/search/tags',['tid'=>$v.tid])}">{$v.tname}</a> ·
+        {/foreach}
+        </li>
+        <li class="comments"><a href="{$vo.url}">{$vo.click}阅读</a></li>
+    </ul>
+    <div class="post-entry">
+        <a href="{$vo.url}" title=""><img src="{$vo.pic_path}" alt="" class="image" /></a>
+        <p>
+            {$vo.description}. <a href="{$vo.url}">阅读详情...</a>
+        </p>
+    </div>
+</div>
+{/foreach}
+{:$page}
+{/block}
+</div>
+

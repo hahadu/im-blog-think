@@ -1,0 +1,46 @@
+{extend name="public/base" /}
+{block name="title"}{$article.current.title}{/block}
+{block name="meta_info"}
+<meta name="keywords" content="{$article.current.keywords}" />
+<meta name="description" content="{$article.current.desription}" />
+<meta name="author" content="{$article.current.username}" />
+{/block}
+
+{block name="main"}
+
+    <div class="post single clearfix">
+        <h2>{$article.current.title}</h2>
+        <ul class="post-meta">
+            <li class="author">作者：<a href="JavaScript:;">{$article.current.username}</a>&emsp;文章分类：<a href="JavaScript:;">{$article.current.category.cname}</a></li>
+            <li class="date">{$article.current.create_time}</li>
+            <li class="tags">{foreach $article.current.tag as $key=>$vo}<a href="{:url('/blog/index/tag',['tid'=>$vo.tid])}">{$vo.tname}</a> · {/foreach}</li>
+            <li class="comments">评论<a href="JavaScript:;">{$comment|count}</a>|阅读<a>{$article.current.click}</a></li>
+        </ul>
+        <div class="post-entry">
+            <img src="{$article.current.pic_path}" alt="" class="image" />
+            <blockquote class="wide">
+                {$article.current.description}
+                <span class="corner"></span>
+            </blockquote>
+            {:$article.current.content}
+
+        </div>
+        <hr/>
+        <div class="pagination">
+            {present name="article.prev"}
+             <li class="prev">上一篇:<a href="{:url('/blog/index/detail',['id'=>$article.prev.id])}">{$article.prev.title}</a></li>
+            {else/}
+            <li class="">上一篇:<a href="JavaScript:;">没有了</a></li>
+            {/present}
+            {present name="article.next"}
+             <li class="next">下一篇:<a href="{:url('/blog/index/detail',['id'=>$article.next.id])}">{$article.next.title}</a></li>
+            {else/}
+            <li class="">下一篇:<a href="JavaScript:;">没有了</a></li>
+            {/present}
+        </div>
+    </div>
+    <!-- /Post -->
+{include file="public/comment"}
+
+
+{/block}

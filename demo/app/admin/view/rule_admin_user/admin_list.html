@@ -1,0 +1,152 @@
+{extend name="public:baseAdminLte"/}
+{block name="title"}{$title}{/block}
+{block name="css"}
+<link rel="stylesheet" href="__PLUGINS__/datatables-bs4/css/dataTables.bootstrap4.css">
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{$title}</h3>
+                <a href="javascript:" onclick="add(this)">
+                    <span class="badge bg-success">添加管理员</span>
+                </a>
+                <a href="javascript:" onclick="on_delete()">
+                    <span class="badge bg-danger">已删除</span>
+                </a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="card-body">
+                    <table class="table table-bordered  table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 7%">用户id</th>
+                                <th style="width: 30%">用户名</th>
+                                <th style="width: 30%">权限组</th>
+                                <th style="width: 15%">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {foreach $data as $key => $vo }
+                            <tr>
+                                <td style="width:40px;height: 15px;">{$vo.id}</td>
+                                <td> {:$vo.username} </td>
+                                <td> {:$vo.title} </td>
+                                <td>
+                                    <a href="{:url('/admin/rule_admin_user/edit_admin',['id'=>$vo.id])}" adId="{:$vo.id}" adName="{:$vo.username}" adTitle="{:$vo.title}" onclick="edit(this)">
+                                        <span class="badge bg-danger">修改管理员信息</span>
+                                    </a>
+                                    <a href="javascript:if(confirm('确定删除？'))location='{:url('/admin/rule/delete_admin/id/'.$vo.id)}'"><span class="badge bg-warning">删除</span></a>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer clearfix">
+
+            </div>            <!-- /.card-body -->
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<div class="modal fade" id="coole-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times;</button><h4 class="modal-title" id=""> 添加管理员</h4></div><div class="modal-body">
+    <form id="coole-form" class="form-inline" action="{:url('/admin/rule_admin_user/add_admin')}" method="post">
+        <input type="hidden" name="id">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+
+            <tr><th width="20%">管理组:</th><td>
+                <div class="input-group" style="font-size: 5px;">
+                    {foreach $groupData as $keg => $vog}
+                    {$vog.title}
+                          <input type="checkbox" name="auth_group_id" value="{$vog.id}" onclick="checkAll(this)">&ensp;
+                    {/foreach}
+                </div>
+            </td></tr>
+            <tr><th>用户名:</th><td> <input class="form-control"type="text" name="describe"></td></tr>
+            <tr><th>邮箱：</th><td> <input class="form-control"type="email" name="email"></td></tr>
+            <tr><th>手机号：</th><td> <input class="form-control"type="text" name="phone"></td></tr>
+            <tr><th>密码：</th><td> <input class="form-control"type="password" name="password"></td></tr>
+            <tr><th></th><td> <input class="btn btn-success" type="submit" value="添加"></td></tr>
+        </table></form></div></div></div></div>
+<div class="modal fade" id="coole-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true"> &times;</button><h4 class="modal-title" id=""> 修改管理员信息</h4></div><div class="modal-body">
+    <form id="coole-form" class="form-inline" action="{:url('/admin/rule_admin_user/edit_admin/')}" method="post">
+        <input type="hidden" name="id">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+            <tr><th width="20%">管理组:</th><td>
+                <div class="input-group" style="font-size: 5px;">
+                    {foreach $groupData as $keg => $vog}
+                    {$vog.title}
+                    <input type="checkbox"  name="auth_group_id" value="{$vog.id}"onclick="checkAll(this)">&ensp;
+                    {/foreach}
+                </div>
+            </td></tr>
+            <tr><th>用户名:</th><td> <input class="form-control" type="text" name="username"></td></tr>
+            <tr><th>邮箱：</th><td> <input class="form-control"type="email" name="email"></td></tr>
+            <tr><th>手机号：</th><td> <input class="form-control"type="text" name="phone"></td></tr>
+            <tr><th>密码：</th><td> <input class="form-control"type="password" name="password"></td></tr>
+            <tr><th></th><td> <input class="btn btn-success" type="submit" value="修改"></td></tr>
+        </table></form></div></div></div></div>
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse"><i class="icon-double-angle-up icon-only bigger-110"></i></a>                  <tr>
+    {/block}
+    {block name="js"}
+    <script src="__PLUGINS__/layer/layer.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="__PLUGINS__/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="__PLUGINS__/datatables/jquery.dataTables.js"></script>
+    <script src="__PLUGINS__/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- AdminLTE App -->
+    <script src="__ADMIN_ADMINLTE__/js/adminlte.min.js"></script>
+    <!-- page script -->
+    <script>
+        // 添加菜单
+        function add(){
+            $("input[name='username']").val('');
+            $("input[name='email']").val('');
+            $("input[name='phone']").val('');
+            $("input[name='password']").val('');
+            $("input[name='auth_group_id']").val('');
+            $('#coole-add').modal('show');
+        }
+
+        // 修改状态码
+        function edit(obj){
+            var adId=$(obj).attr('adId');
+            var adName=$(obj).attr('adName');
+            var adEmail=$(obj).attr('adEmail');
+            var adGId=$(obj).attr('adGId');
+            $("input[name='id']").val(adId);
+            $("input[name='username']").val(adName);
+            $("input[name='email']").val(adEmail);
+            $("input[name='phone']").val('');
+            $("input[name='auth_group_id']").val(adGId);
+            $('#coole-edit').modal('show');
+        }
+        function on_delete(){
+            layer.open({
+                type: 2,
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: "{:url('admin/status_code/on_delete')}",
+            });
+        }
+    </script>
+    <script>
+    $(function(){$('.b-has-child .active').parents('.b-has-child').eq(0).find('.b-nav-parent').click();
+    })
+    function checkAll(obj){
+        $(obj).parents('.b-group').eq(0).find("input[type='checkbox']").prop('checked', $(obj).prop('checked'));
+    }
+
+    </script>
+
+    {/block}
+

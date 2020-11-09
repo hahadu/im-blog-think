@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" lang="cn">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{block name='title'}{$title}{/block}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="__PLUGINS__/font-awesome/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    {block name='css'}
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="__PLUGINS__/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="__PLUGINS__/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="__PLUGINS__/jqvmap/jqvmap.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="__PLUGINS__/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="__PLUGINS__/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="__PLUGINS__/summernote/summernote-bs4.css">
+    {/block}
+    <!-- Theme style -->
+    <link rel="stylesheet" href="__ADMIN_ADMINLTE__/css/adminlte.min.css">
+    <script src="__PLUGINS__/jquery/jquery.min.js"></script>
+    {block name='headjs'}{/block}
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Navbar -->
+   {block name='navRight'}{include file='public/navRight' }{/block}
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+   {block name='navLetft'}{include file='public/navLeft' }{/block}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">{$title}</h1>
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">首页</a></li>
+                            <li class="breadcrumb-item active">{$title}</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <!-- Main content -->
+        <section class="content">
+    {block name='content'}
+    {/block}
+        <!-- /.content -->
+        </section>
+    </div>
+
+    <!-- /.content-wrapper -->
+    {block name='footer'}
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2019-{:date('Y')} <a href="http://github.com/hahadu">CooleAdmin</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 1.0
+        </div>
+    </footer>
+    {/block}
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<!-- jQuery UI 1.11.4 -->
+<script src="__PLUGINS__/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+{block name='js'}
+<!-- Bootstrap 4 -->
+<script src="__PLUGINS__/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- ChartJS -->
+<script src="__PLUGINS__/chart.js/Chart.min.js"></script>
+<!-- Sparkline -->
+<script src="__PLUGINS__/sparklines/sparkline.js"></script>
+<!-- JQVMap -->
+<script src="__PLUGINS__/jqvmap/jquery.vmap.min.js"></script>
+<script src="__PLUGINS__/jqvmap/maps/jquery.vmap.usa.js"></script>
+<!-- jQuery Knob Chart -->
+<script src="__PLUGINS__/jquery-knob/jquery.knob.min.js"></script>
+<!-- daterangepicker -->
+<script src="__PLUGINS__/moment/moment.min.js"></script>
+<script src="__PLUGINS__/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="__PLUGINS__/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Summernote -->
+<script src="__PLUGINS__/summernote/summernote-bs4.min.js"></script>
+<!-- overlayScrollbars -->
+<script src="__PLUGINS__/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<!-- AdminLTE App -->
+<script src="__ADMIN_ADMINLTE__/js/adminlte.js"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="__ADMIN_ADMINLTE__/js/pages/dashboard.js"></script>
+{/block}
+</body>
+
+</html>

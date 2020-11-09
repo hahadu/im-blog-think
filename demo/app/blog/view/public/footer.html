@@ -1,0 +1,13 @@
+<div id="footer">
+    <div class="info container clearfix">
+        <ul class="copyright">
+            <li>&copy; {:date('Y')} HAHADU bolg</li>
+            {if true==$show_link}
+            <li>友情链接</li>
+            {foreach $links as $key=>$vo}
+            <li><a href="{$vo.url}">{$vo.lname}</a></li>
+            {/foreach}
+            {/if}
+        </ul>
+    </div>
+</div>

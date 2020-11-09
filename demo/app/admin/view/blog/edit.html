@@ -1,0 +1,131 @@
+{extend name="public:baseAdminLte"/}
+{block name="css"}
+<link rel="stylesheet" href="__PLUGINS__/select2/css/select2.min.css">
+<link rel="stylesheet" href="__PLUGINS__/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+{icheckcss/}
+{/block}
+{block name="content"}
+<div class="container-fluid">
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">修改</h3>
+                </div>
+                <!-- /.card-header -->
+                <!-- form start -->
+                <form role="form" method="post">
+                    <div class="card-body">
+                        <div class="form-group col-sm-8">
+                            <label>分类</label>
+                            <select class="form-control select2 select2-danger" name="cid" data-dropdown-css-class="select2-danger" style="width: 100%;">
+                                {foreach $categorys as $key=>$vo}
+                                <option value="{$vo.cid}" {eq name="$data.category.cid" value="$vo.cid" }selected="selected"{/eq} >{$vo.cname}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+
+                        <div class="form-group col-sm-8">
+                            <label>标题</label>
+                            <input type="text" name="title" class="form-control" value="{$data.title}" placeholder="Enter title">
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <label>标签</label>
+                            {foreach $tags as $key=>$vo}
+                            <div class="form-check">
+                                <input id="tag_{$vo.tid}" class="icheckbox_flat-pink" type="checkbox" name="tids[]" value="{$vo.tid}" {if condition="in_array($vo.tid,$data.tids)"}checked='checked'{/if} >
+                                <label class="form-check-label" for="tag_{$vo.tid}">{$vo.tname}</label>
+                            </div>
+                            {/foreach}
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group col-sm-8">
+                                <label>关键词</label>
+                                <input type="text" name="keywords" class="form-control" value="{$data.keywords}" placeholder="Enter title">
+                            </div>
+                            <div class="form-group">
+                                <label>文章描述</label>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Enter description">{$data.description}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>详情</label>
+                                {ueditor name="content"}
+                                {$data.content}
+                                {/ueditor}
+                                <script>
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="">
+                                    <label>是否原创：</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="icheck" name="is_original" type="radio" {eq name="$data.is_original" value="1"}checked="checked"{/eq} id="is_original1" name="customRadio" value="1">
+                                    <label for="is_original1" >是 &emsp;</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="ickeck" name="is_original"  type="radio" {eq name="$data.is_original" value="0"}checked="checked"{/eq} id="is_original0" name="customRadio" value="0">
+                                    <label for="is_original0" class="">否&emsp;</label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="">
+                                    <label>是否置顶：</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="icheck" name="is_top" type="radio" {eq name="$data.is_top" value="1"}checked="checked"{/eq} id="is_top1" value="1">
+                                    <label for="is_top1" >是 &emsp;</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="ickeck" name="is_top"  type="radio" {eq name="$data.is_top" value="0"}checked="checked"{/eq} id="is_top0" value="0">
+                                    <label for="is_top0" class="">否&emsp;</label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="">
+                                    <label>是否显示：</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="icheck" name="is_show" type="radio" {eq name="$data.is_show" value="1"} checked="checked" {/eq} id="is_show1" value="1">
+                                    <label for="is_show1" >是 &emsp;</label>
+                                </div>
+                                <div class="col-1 radio">
+                                    <input class="ickeck" name="is_show"  type="radio" {eq name="$data.is_show" value="0"}checked="checked"{/eq} id="is_show0" value="0">
+                                    <label for="is_show0" class="">否&emsp;</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary right">确认提交</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+
+        </div>
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->
+
+{/block}
+{block name="js"}
+{icheckjs/}
+{/block}

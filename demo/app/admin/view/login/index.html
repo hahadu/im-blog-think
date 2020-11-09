@@ -1,0 +1,105 @@
+<!--
+  ~  +----------------------------------------------------------------------
+  ~  | Created by  hahadu
+  ~  +----------------------------------------------------------------------
+  ~  | Copyright (c) 2020. [hahadu] All rights reserved.
+  ~  +----------------------------------------------------------------------
+  ~  | SiteUrl: https://github.com/hahadu
+  ~  +----------------------------------------------------------------------
+  ~  | Author: hahadu <582167246@qq.com>
+  ~  +----------------------------------------------------------------------
+  ~  | Date: 2020/9/15 下午6:25
+  ~  +----------------------------------------------------------------------
+  ~  | Description:  a low phper
+  ~  +----------------------------------------------------------------------
+  -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{$title}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="__PLUGINS__/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="__ADMIN_ADMINLTE__/css/ionicons/ionicons.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="__PLUGINS__/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="__ADMIN_ADMINLTE__/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="/admin/"><b>Admin</b>Login</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">输入账号密码</p>
+
+      <form action="/admin/login/login" method="post">
+        <div class="input-group mb-3">
+          <input type="text" name="username" class="form-control" placeholder="账号">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" name="password" class="form-control" placeholder="密码">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" name="captcha" class="form-control" placeholder="验证码">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <img src="{:url('/admin/login/verify')}">
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember">
+              <label for="remember">
+                记住账号密码
+              </label>
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="__PLUGINS__/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="__PLUGINS__/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="__ADMIN_ADMINLTE__/js/adminlte.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<div id="header" class="container clearfix">
+
+    <a href="./index.html" id="logo"><img src="./images/logo.png" alt="" /></a>
+
+    <!-- Navigation -->
+    <ul id="navigation">
+        <li class="current">
+            <a href="{:url('/blog')}">Blog</a>
+            <ul>
+                {foreach $categorys as $key=>$vo}
+                <li><a href="{:url('/blog/index/category',['cid'=>$vo.cid])}">{$vo.cname}{present name="$vo._child"}<i></i></a>
+                    {foreach $vo._child as $key=>$vo}
+                    <ul>
+                        <li><a href="{:url('/blog/index/category',['cid'=>$vo.cid])}">{$vo.cname}</a></li>
+                    </ul>
+                    {/foreach}
+                    {else /}
+                    </a>
+                    {/present}</li>
+                {/foreach}
+            </ul>
+        </li>
+        <li>
+            <a href="{:url('login/index')}">login</a>
+        </li>
+    </ul>
+    <!-- /Navigation -->
+
+</div>

@@ -1,0 +1,51 @@
+
+<div id="comments">
+
+    <h4>评论 ({$comment|count})</h4>
+
+    <ol class="comments-list">
+        {foreach $comment as $key=>$vo}
+        <li class="comment">
+            <div>
+                <img src="/upload/avatar/{$vo.avatar}" alt="" class="avatar" />
+                <div class="comment-meta">
+                    <h5 class="author"><a href="JavaScript:;">{:$vo.username}</a> - <a href="JavaScript:;" class="reply">评论</a></h5>
+                    <p class="date">{$vo.create_time}发表</p>
+                </div>
+                <div class="comment-entry">
+                    {:$vo.content}
+                </div>
+            </div>
+            {foreach $vo.child as $k=>$v}
+            <ul class="children">
+                <li class="comment">
+                    <div>
+                        <img src="/upload/avatar/{$v.avatar}" alt="" class="avatar" />
+                        <div class="comment-meta">
+                            <h5 class="author"><a href="JavaScript:;">{$v.username}</a> - <a href="JavaScript:;" class="reply">回复：{:$v.reply_name}</a></h5>
+                            <p class="date">{$v.create_time}发表</p>
+                        </div>
+                        <div class="comment-entry">
+                            {:$v.content}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            {/foreach}
+        </li>
+        {/foreach}
+    </ol>
+
+
+    <!-- Comments Form -->
+    <h4>发表评论</h4>
+    <form method="post" action="{:url('/blog/index/comment')}" id="comments-form" />
+    <input type="hidden" name="aid" value="{$article.current.id}">
+    <input type="hidden" name="pid" value="0">
+    <textarea cols="88" rows="6" name="content" placeholder="发表评论"></textarea>
+    <input type="submit" value="发表评论" class="red" />
+    </form>
+    <!-- /Comments Form -->
+
+</div>
+

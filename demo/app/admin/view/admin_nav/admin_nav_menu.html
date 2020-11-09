@@ -1,0 +1,72 @@
+{
+"homeInfo": {
+"title": "{$homeInfo.name}",
+"href": "{$homeInfo.url}"
+},
+"logoInfo": {
+"title": "{$logoInfo.title}",
+"image": "{$logoInfo.image}",
+"href": ""
+},
+"menuInfo": [
+{
+"title": "主菜单",
+"icon": "fa fa-address-book",
+"href": "",
+"target": "_self",
+"child": [
+{
+"title": "主页模板",
+"href": "",
+"icon": "fa fa-home",
+"target": "_self",
+"child": [
+{
+"title": "主页一",
+"href": "page/welcome-1.html",
+"icon": "fa fa-tachometer",
+"target": "_self"
+},
+{
+"title": "主页二",
+"href": "page/welcome-2.html",
+"icon": "fa fa-tachometer",
+"target": "_self"
+},
+{
+"title": "主页三",
+"href": "page/welcome-3.html",
+"icon": "fa fa-tachometer",
+"target": "_self"
+}
+]
+},
+{foreach $menuInfo as $key=>$vo}
+{
+"title": "{$vo.name}",
+"href": "{$vo.url}",
+"icon": "fa fa-{$vo.icon}",
+"target": "_self",
+"child": [
+{foreach $vo._child as $key => $voc}
+{
+"title": "{$voc.name}",
+"href": "{$voc.url}",
+"icon": "fa fa-{$voc.icon}",
+"target": "_self"
+
+},
+{/foreach}
+{
+}
+]
+
+},
+{/foreach}
+
+{
+}
+]
+}
+]
+}

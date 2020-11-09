@@ -1,0 +1,98 @@
+{extend name="public:baseAdminLte"/}
+{block name="title"}{$title}{/block}
+{block name="css"}
+<link rel="stylesheet" href="__PLUGINS__/datatables-bs4/css/dataTables.bootstrap4.css">
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <a href="{:url('add')}" >
+                    <span class="badge bg-success">添加文章</span>&nbsp;
+                </a>
+                <a href="javascript:" onclick="on_delete()">
+                    <span class="badge bg-danger">已删除</span>
+                </a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="card-body">
+                    <table class="table table-bordered  table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 7%">id</th>
+                                <th style="width: 10%">分类</th>
+                                <th style="width: 30%">标题</th>
+                                <th style="width: 10%">作者</th>
+                                <th style="width: 8%">标签</th>
+                                <th style="width: 10%">置顶</th>
+                                <th style="width: 10%">原创</th>
+                                <th style="width: 10%">显示</th>
+                                <th style="width: 15%">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {foreach $list as $key => $vo }
+                            <tr>
+                                <td style="width:40px;height: 15px;">{$vo.id}</td>
+                                <td> {:$vo.category.cname} </td>
+                                <td> {:$vo.title} </td>
+                                <td> {:$vo.author} </td>
+                                <td>         {foreach $vo.tag as $k=>$v}
+                                    {$v.tname}、
+                                    {/foreach}
+                                </td>
+                                <td> {:$vo.is_top} </td>
+                                <td> {:$vo.is_original} </td>
+                                <td> {:$vo.is_show} </td>
+                                <td>
+                                    <a href="{:url('/admin/blog/edit',['id'=>$vo.id])}" >
+                                        <span class="badge bg-danger">修改</span>
+                                    </a>
+                                    <a href="javascript:if(confirm('确定删除？'))location='{:url('/admin/blog/delete',['id'=>$vo.id])}'"><span class="badge bg-warning">删除</span></a>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer clearfix">
+                {$page|raw}
+            </div>            <!-- /.card-body -->
+        </div>
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse"><i class="icon-double-angle-up icon-only bigger-110"></i></a>                  <tr>
+    {/block}
+    {block name="js"}
+    <script src="__PLUGINS__/layer/layer.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="__PLUGINS__/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables -->
+    <script src="__PLUGINS__/datatables/jquery.dataTables.js"></script>
+    <script src="__PLUGINS__/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <!-- AdminLTE App -->
+    <script src="__ADMIN_ADMINLTE__/js/adminlte.min.js"></script>
+    <!-- page script -->
+    <script>
+        function on_delete(){
+            layer.open({
+                type: 2,
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: "{:url('admin/blog/on_delete')}",
+            });
+        }
+    </script><script>
+    $(function(){$('.b-has-child .active').parents('.b-has-child').eq(0).find('.b-nav-parent').click();
+    })
+</script>
+    {/block}
+
