@@ -19,7 +19,7 @@ namespace Hahadu\ImBlogThink\Models;
 use Hahadu\Helper\DateHelper;
 use Hahadu\Helper\StringHelper;
 use Hahadu\ThinkBaseModel\BaseModel;
-use app\user\model\Users;
+use Hahadu\ImAdminThink\model\Users;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
 
