@@ -26,16 +26,6 @@ if(!function_exists('comment_sort')){
         return ($prev<$next) ? -1 : 1;
     }
 }
-/****
- * @param $code
- * @param string|null $jumpUrl
- * @param int|null $waitSecond
- */
-if(!function_exists('jump_page')){
-    function jump_page($code,$jumpUrl = null,$waitSecond = null){
-        return \Hahadu\ThinkJumpPage\JumpPage::jumpPage($code,$jumpUrl,$waitSecond);
-    }
-}
 
 if(!function_exists('preg_editor_image_path')){
     /**
