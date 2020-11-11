@@ -447,7 +447,7 @@ CREATE TABLE `du_send_user_mail` (
 --
 
 INSERT INTO `du_send_user_mail` (`id`, `uid`, `smtp_address`, `smtp_username`, `smtp_password`, `smtp_secure`, `smtp_port`, `status`) VALUES
-(5, 88, 'smtp.qq.com', '237592008@qq.com', 'fsamebfbodkabgbf', 'ssl', '465', 1);
+(5, 88, 'smtp.qq.com', '', '', 'ssl', '465', 1);
 
 -- --------------------------------------------------------
 
