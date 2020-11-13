@@ -75,7 +75,7 @@ class Comment extends BaseModel
 
         // 给站长发送通知邮件
         $smtp = config('smtp');
-        $url = url('/blog/index/detail',array('id'=>5),true,true);
+        $url = url('index/detail',array('id'=>5),true,true);
         if(config('comment.COMMENT_SEND_EMAIL') && $is_admin==0){
             $address=config('comment.EMAIL_RECEIVE_ADMIN'); //收件人
             if(!empty($address)){
@@ -224,7 +224,6 @@ class Comment extends BaseModel
             ->limit(10)
             ->select();
         foreach ($data as $k => $v) {
-         //   $data[$k]['create_time']=DateHelper::word_time($v['create_time']);
             // 截取文章标题
             $data[$k]['title']=StringHelper::re_substr($v['title'],0,20);
             // 处理有表情时直接截取会把img表情截断的问题
@@ -234,7 +233,7 @@ class Comment extends BaseModel
             }else{
                 $data[$k]['content']=htmlspecialchars_decode($v['content']);
             }
-            $data[$k]['url'] = url('/blog/index/detail',array('id'=>$v['id']));
+            $data[$k]['url'] = url('index/detail',array('id'=>$v['id']));
         }
         return $data;
     }

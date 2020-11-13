@@ -34,37 +34,89 @@ class BaseBlogController extends BaseController
     protected $link; //友链
     protected $comment; //评论
     protected $blog;
-    public function __construct(App $app)
+
+    /****
+     * 获取常用数据
+     * @return array
+     */
+    protected function get_home_info(){
+        return array(
+            'categorys'=>$this->category->getAllData('all','level'),
+            'tags'=>$this->tag->getAllData(),
+            'links'=>$this->link->getDataByState(0,1),
+            'recommend'=>$this->getRecommend(),
+            'new_comment'=>$this->get_new_comment(),
+            'hot_article'=>$this->getHotArticle(5),
+            'show_link'=>$this->is_show_link(),
+        );
+    }
+    protected function initialize()
     {
-        parent::__construct($app);
+        parent::initialize();
         $this->category = new Category();
         $this->tag = new Tag();
         $this->link = new Link();
         $this->comment = new Comment();
         $this->blog = new Blog();
-        // 获取置顶推荐文章
-        $recommend=$this->blog->getRecommend();
-        $hot_article = $this->blog->hotArticle(5);
-        // 获取最新评论
-        $new_comment=$this->comment->getNewComment();
-        // 判断是否显示友情链接
-        $root_name = parse_name(Request::rootUrl()); //应用名
-        $controller_name = parse_name(Request::controller()); //控制名
-        $action_name = parse_name(Request::action());   //操作名
-        $show_link=($action_name=='index') ? true : false;
+    }
 
-        // 分配常用数据
-        $assign=array(
-            'categorys'=>$this->category->getAllData('all','level'),
-            'tags'=>$this->tag->getAllData(),
-            'links'=>$this->link->getDataByState(0,1),
-            'recommend'=>$recommend,
-            'new_comment'=>$new_comment,
-            'hot_article'=>$hot_article,
-            'show_link'=>$show_link
-        );
-        return View::assign($assign);
+    /****
+     * 获取置顶文章
+     * @return mixed
+     */
+    protected function getRecommend(){
+
+        return $this->blog->getRecommend();
 
     }
+
+    /*****
+     * 获取热门文章
+     */
+    protected function getHotArticle($limit = 5){
+
+        return $this->blog->hotArticle($limit);
+
+    }
+
+    /****
+     * 获取最新评论
+     * @return mixed
+     */
+    protected function get_new_comment(){
+
+        return $this->comment->getNewComment();
+
+    }
+
+    /*****
+     * 断是否显示友情链接
+     * @return bool
+     */
+    protected function is_show_link(){
+
+        $info = $this->get_current_url_info();
+
+        // 判断是否显示友情链接
+        return $info['action_name']=='index' && $info['controller_name'] == "index";
+
+    }
+
+    /****
+     * 获取当前url信息
+     */
+    protected function get_current_url_info(){
+
+        $root_name = parse_name(Request::rootUrl()); //应用名
+
+        $root_name = str_replace('/','',$root_name);
+
+        $controller_name = parse_name(Request::controller()); //控制名
+
+        $action_name = parse_name(Request::action());   //操作名
+
+        return compact("root_name","controller_name","action_name");
+    }
+
 
 }

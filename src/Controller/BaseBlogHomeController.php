@@ -22,10 +22,6 @@ use think\facade\Db;
 
 class BaseBlogHomeController extends BaseBlogController
 {
-    public function __construct(App $app)
-    {
-        parent::__construct($app);
-    }
     // 文章内容
     public function detail($id){
         $id = (int)$id;
