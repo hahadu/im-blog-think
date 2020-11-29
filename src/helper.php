@@ -42,3 +42,25 @@ if(!function_exists('preg_editor_image_path')){
         return $data;
     }
 }
+if(!function_exists('user_status')){
+    /*****
+     * 用户状态
+     * @param int $status 状态码
+     * @return string
+     */
+    function user_status($status){
+        switch ($status){
+            case 0:
+                $result = '禁用';
+                break;
+            case 1:
+                $result = '正常';
+                break;
+            case 2:
+            default :
+                $result = '未验证';
+                break;
+        }
+        return $result;
+    }
+}
