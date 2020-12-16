@@ -19,7 +19,8 @@
         "php": ">=7.0",
         "hahadu/im-admin-think": ">=1.0",
         "hahadu/image-factory": ">=1.0",
-        "hahadu/think-ueditor": ">=1.0"
+        "hahadu/think-ueditor": ">=1.0",
+        "jaeger/querylist": "^4.2"
     },
     "require-dev": {
         "php": ">=7.0"

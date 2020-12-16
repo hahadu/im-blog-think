@@ -16,6 +16,7 @@
  **/
 
 namespace Hahadu\ImBlogThink\Models;
+use Hahadu\Helper\HttpHelper;
 use Hahadu\ImAdminThink\model\Users;
 use Hahadu\ImBlogThink\Models\BlogTag;
 use Hahadu\ImBlogThink\Models\BlogPic;
@@ -23,6 +24,7 @@ use Hahadu\ImBlogThink\Models\Category;
 use Hahadu\ThinkBaseModel\BaseModel;
 use Hahadu\Helper\DateHelper;
 use Hahadu\DataHandle\Data;
+use QL\QueryList;
 use think\Exception;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
@@ -39,6 +41,9 @@ class Blog extends BaseModel
     protected $blog_pic;
     protected $category;
     protected $user;
+    protected $ql;
+    protected $collect_url;
+
 
     public function __construct(array $data = [])
     {
@@ -46,6 +51,8 @@ class Blog extends BaseModel
         $this->blog_tag = new BlogTag();
         $this->category = new Category();
         $this->user = new Users();
+        $this->ql = new QueryList();
+        $this->collect_url = new CollectUrl();
         parent::__construct($data);
 
     }
@@ -197,9 +204,7 @@ class Blog extends BaseModel
            ->order('click','desc')
            ->limit($limit)
            ->select();
-/*       foreach ($hot as $k=>$v){
-           $hot[$k]['username']=$v->hidden(['users'])->users->username;
-       }*/
+
        return $hot;
     }
 
@@ -319,9 +324,9 @@ class Blog extends BaseModel
             ];
             //添加新图片路径
             $this->blog_pic->addData($pic_data);
-            return 100011;
+            return wrap_msg_array(100011,'编辑成功',$aid);
         }else{
-            return 420011;
+            return wrap_msg_array(420011,'文章修改失败');
         }
     }
 
@@ -377,14 +382,94 @@ class Blog extends BaseModel
                 }
                 $sitemap .= '</urlset>';
                 file_put_contents('./sitemap.xml',$sitemap);
-                return 100012;
+                return wrap_msg_array(100012,'文章添加成功',['aid'=>$id]);
             }else{
-                return 420001;
+                return wrap_msg_array(420001,'文章添加失败');
             }
         }else{
-            return 420002;
+            return wrap_msg_array(420002,'创建失败');
         }
 
+    }
+
+    /*****
+     * 自动采集文章
+     * @param $serach_tag
+     * @param $remove_tage
+     * @param int $limit
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function collect_items($serach_tag,$remove_tage,$limit=5){
+
+        $page_infos = $this->collect_url->where('type',2)
+            ->where('aid',null)
+            ->limit($limit)
+            ->select();
+
+        foreach ($page_infos as $key=>$page_info) {
+            $collect = $this->collect_item($page_info,$serach_tag,$remove_tage);
+            return $collect;
+        }
+
+    }
+
+    /****
+     * 自动采集-采集单个文章
+     * @param $page_info
+     * @param $serach_tag
+     * @param null $remove_tage
+     * @return false|int|mixed|null
+     */
+    public function collect_item($page_info,$serach_tag,$remove_tage=null){
+        if(null===$page_info->aid){
+            $page_url = $page_info->page_url;
+
+            $page_html = HttpHelper::get($page_url);
+
+            $item_html = $this->ql->html($page_html)->find($serach_tag);
+            if(null!==$remove_tage){
+                $item_html->find($remove_tage)->remove();
+            }
+            $content = $item_html->html();
+
+            $metas = $this->collect_url->get_metas($page_url);
+
+            //文章写入数据库
+            $data = [
+                'title' => $metas->title,
+                'keywords' =>$metas->keywords,
+                'description'=>$metas->description,
+                'content'=>$content,
+                'author'=>(null !== get_uid())?get_uid():1,
+                'cid'=>$page_info->cid,
+            ];
+
+            //数据查重
+            $checkEmpty = $this->where(['title' => $metas->title,'keywords'=>$metas->keywords,'description'=>$metas->description,'content'=>htmlspecialchars($content)])->findOrEmpty();
+            if($checkEmpty->isEmpty()){
+                $aid = $this->addData($data);
+                $aid = $aid['data']['aid'];
+            }else{
+                $aid = $checkEmpty->id;
+            }
+
+            $url_data = [
+                'id'=>$page_info->id,
+                'aid' => $aid,
+                'name'=>$metas->title,
+                'collect_time'=>time(),
+            ];
+            $update = $this->collect_url::update($url_data);
+            if(null!==$update){
+                return $aid;
+            }else{
+                return false;
+            }
+        }
+        return null;
     }
 
 
