@@ -21,6 +21,7 @@ use Hahadu\ImAdminThink\model\Users;
 use Hahadu\ImBlogThink\Models\BlogTag;
 use Hahadu\ImBlogThink\Models\BlogPic;
 use Hahadu\ImBlogThink\Models\Category;
+use Hahadu\ImBlogThink\Models\CollectUrl;
 use Hahadu\ThinkBaseModel\BaseModel;
 use Hahadu\Helper\DateHelper;
 use Hahadu\DataHandle\Data;
@@ -29,6 +30,7 @@ use think\Exception;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
 use Hahadu\Helper\StringHelper;
+
 
 class Blog extends BaseModel
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace app\common\model;
+namespace Hahadu\ImBlogThink\Models;
 
 
 use Hahadu\ImBlogThink\Models\Category;
