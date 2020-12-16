@@ -152,12 +152,12 @@ class CollectUrl extends BaseModel
      * @return array
      */
     public function get_item_url($tags){
-        $nav_list = $this->collect_url->read_url_list(1);
+        $nav_list = $this->read_url_list(1);
         //$tags = '.home-post-list>.postlist-item>.post-img>a';
         $ids = [];
         foreach ($nav_list as $key=>$page) {
             $parent_html = HttpHelper::get($page->page_url);
-            $item_list = $this->collect_url->get_item_href($parent_html, $tags)->all();
+            $item_list = $this->get_item_href($parent_html, $tags)->all();
             $cid = $page->cid;
             //写入数据库
             foreach ($item_list as $k => $item) {
@@ -166,7 +166,7 @@ class CollectUrl extends BaseModel
                     'page_url'=> $item,
                     'type'=>2,
                 ];
-                $url_id = $this->collect_url->save_page_url($data);
+                $url_id = $this->save_page_url($data);
                 $ids[$key][$k]=$url_id;
             }
 
