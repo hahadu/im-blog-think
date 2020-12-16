@@ -4,6 +4,7 @@
 namespace Hahadu\ImBlogThink\Models;
 
 
+use Hahadu\Helper\HttpHelper;
 use Hahadu\ImBlogThink\Models\Category;
 use Hahadu\ThinkBaseModel\BaseModel;
 use QL\QueryList;
@@ -144,6 +145,35 @@ class CollectUrl extends BaseModel
 
         return $head;
     }
+
+    /*****
+     * 获取文章链接
+     * @param $tags
+     * @return array
+     */
+    public function get_item_url($tags){
+        $nav_list = $this->collect_url->read_url_list(1);
+        //$tags = '.home-post-list>.postlist-item>.post-img>a';
+        $ids = [];
+        foreach ($nav_list as $key=>$page) {
+            $parent_html = HttpHelper::get($page->page_url);
+            $item_list = $this->collect_url->get_item_href($parent_html, $tags)->all();
+            $cid = $page->cid;
+            //写入数据库
+            foreach ($item_list as $k => $item) {
+                $data = [
+                    'cid'=>$page->cid,
+                    'page_url'=> $item,
+                    'type'=>2,
+                ];
+                $url_id = $this->collect_url->save_page_url($data);
+                $ids[$key][$k]=$url_id;
+            }
+
+        }
+        return $ids;
+    }
+
 
 
 }
