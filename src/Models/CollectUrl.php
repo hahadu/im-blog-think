@@ -64,7 +64,6 @@ class CollectUrl extends BaseModel
         foreach ($nav_list as $key=>$page) {
             $parent_html = HttpHelper::get($page->page_url);
             $item_list = $this->get_item_href($parent_html, $tags)->all();
-            $cid = $page->cid;
             //写入数据库
             foreach ($item_list as $k => $item) {
                 $data = [
@@ -138,7 +137,7 @@ class CollectUrl extends BaseModel
             }
             $nav_info_list[$key] = compact('nav', 'child_nav');
         }
-        yield $nav_info_list;
+        return $nav_info_list;
     }
 
     /*****
@@ -203,7 +202,7 @@ class CollectUrl extends BaseModel
      * @param string $serach_tag 需要采集的标签
      * @param string $remove_tage 需要删除的标签
      * @param int $limit 采集数量
-     * @return mixed
+     * @return \Generator
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -215,11 +214,11 @@ class CollectUrl extends BaseModel
             ->limit($limit)
             ->select();
 
+        $collect = [];
         foreach ($page_infos as $key=>$page_info) {
-            $collect = $this->collect_item($page_info,$serach_tag,$remove_tage);
-            return $collect;
+            $collect[$key] = $this->collect_item($page_info,$serach_tag,$remove_tage);
         }
-
+        return $collect;
     }
 
 
