@@ -22,7 +22,6 @@ class CollectUrl extends BaseModel
         $this->ql = new QueryList();
         $this->category = new Category();
         $this->blog = new Blog();
-
     }
 
     /****
@@ -76,7 +75,6 @@ class CollectUrl extends BaseModel
                 $url_id = $this->save_page_url($data);
                 $ids[$key][$k]=$url_id;
             }
-
         }
         return $ids;
     }

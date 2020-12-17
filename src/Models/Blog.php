@@ -16,21 +16,17 @@
  **/
 
 namespace Hahadu\ImBlogThink\Models;
-use Hahadu\Helper\HttpHelper;
 use Hahadu\ImAdminThink\model\Users;
 use Hahadu\ImBlogThink\Models\BlogTag;
 use Hahadu\ImBlogThink\Models\BlogPic;
 use Hahadu\ImBlogThink\Models\Category;
-use Hahadu\ImBlogThink\Models\CollectUrl;
 use Hahadu\ThinkBaseModel\BaseModel;
 use Hahadu\Helper\DateHelper;
 use Hahadu\DataHandle\Data;
-use QL\QueryList;
 use think\Exception;
 use think\facade\Db;
 use think\model\concern\SoftDelete;
 use Hahadu\Helper\StringHelper;
-
 
 class Blog extends BaseModel
 {
@@ -43,9 +39,6 @@ class Blog extends BaseModel
     protected $blog_pic;
     protected $category;
     protected $user;
-    protected $ql;
-    protected $collect_url;
-
 
     public function __construct(array $data = [])
     {
@@ -53,8 +46,6 @@ class Blog extends BaseModel
         $this->blog_tag = new BlogTag();
         $this->category = new Category();
         $this->user = new Users();
-        $this->ql = new QueryList();
-        $this->collect_url = new CollectUrl();
         parent::__construct($data);
 
     }
@@ -391,6 +382,10 @@ class Blog extends BaseModel
         }else{
             return wrap_msg_array(420002,'创建失败');
         }
+
     }
+
+
+
 
 }
