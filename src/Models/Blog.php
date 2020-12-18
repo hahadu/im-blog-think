@@ -98,10 +98,10 @@ class Blog extends BaseModel
             }
             // 如果不为空 添加url
             if(!empty($data['prev'])){
-                $data['prev']['url']=url('/blog/index/detail',array('id'=>$data['prev']['id']));
+                $data['prev']['url']=url('index/detail',array('id'=>$data['prev']['id']));
             }
             if(!empty($data['next'])){
-                $data['next']['url']=url('/blog/index/detail',array('id'=>$data['next']['id']));
+                $data['next']['url']=url('index/detail',array('id'=>$data['next']['id']));
             }
             $data['current']=$this->where(array('id'=>$id))->find();
             $data['current']['pic_path']=$this->blog_pic->getDataByAid($id);
@@ -172,7 +172,7 @@ class Blog extends BaseModel
             $list[$k]['category']=current($this->category->getDataByCid($v['cid'],'cid,cid,cname'));
             $v['content']=preg_editor_image_path($v['content']);
             $list[$k]['content']=htmlspecialchars($v['content']);
-            $list[$k]['url']=url('/blog/index/detail',array('id'=>$v['id']));
+            $list[$k]['url']=url('index/detail',array('id'=>$v['id']));
             $list[$k]['extend']=$extend;
         }
         $page = $list->render();
@@ -235,7 +235,7 @@ class Blog extends BaseModel
             ->paginate(10);
         foreach ($list as $k => $v) {
             $list[$k]['pic_path']=$this->blog_pic->getDataByAid($v['id']);
-            $list[$k]['url']=url('/blog/index/detail',array('search'=>$search,'id'=>$v['id']));
+            $list[$k]['url']=url('index/detail',array('search'=>$search,'id'=>$v['id']));
             $list[$k]['tids']=$this->blog_tag->getDataByAid($v['id']);
             $list[$k]['tag']=$this->blog_tag->getDataByAid($v['id'],'all');
             $list[$k]['category']=current($this->getDataByCid($v['cid'],'cid,cid,cname,keywords'));
@@ -371,7 +371,7 @@ class Blog extends BaseModel
                 // 生成sitemap文件
                 $sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<urlset>\r\n";
                 foreach($list as $k=>$v){
-                    $sitemap .= "    <url>\r\n"."        <loc>".url('Home/Index/article',array('id'=>$v['id']),'',true)."</loc>\r\n"."        <lastmod>".$v['create_time']."</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
+                    $sitemap .= "    <url>\r\n"."        <loc>".url('index/detail',array('id'=>$v['id']),'',true)."</loc>\r\n"."        <lastmod>".$v['create_time']."</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
                 }
                 $sitemap .= '</urlset>';
                 file_put_contents('./sitemap.xml',$sitemap);
