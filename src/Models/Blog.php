@@ -59,7 +59,17 @@ class Blog extends BaseModel
             ->bind(['username']);
     }
 
-    // 传递id获取单条全部数据 $map 主要为前台页面上下页使用
+    /******
+     * 传递id获取单条全部数据
+     *
+     * 主要为前台页面上下页使用
+     * @param $id
+     * @param string $map
+     * @return array|\think\Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function getDataById($id, $map = '')
     {
 
@@ -119,6 +129,14 @@ class Blog extends BaseModel
         return $data;
     }
 
+    /*****
+     * 获取分页数据
+     * @param string $cid
+     * @param string $tid
+     * @param string $is_show
+     * @param int $limit
+     * @return array
+     */
     public function getPageData($cid = 'all', $tid = 'all', $is_show = '1', $limit = 10)
     {
         if ($cid == 'all' && $tid == 'all') {
@@ -146,8 +164,13 @@ class Blog extends BaseModel
                     'a.is_show' => $is_show
                 );
             }
+            $page_url = [
+                'list_rows' => $limit,
+                'query' => ['tid' => $tid],
+            ];
+
             $list = $this->blog_tag
-                ->getPageBlogList($where, $limit);
+                ->getPageBlogList($where, $page_url);
             $extend = array(
                 'type' => 'tid',
                 'id' => $tid
@@ -164,8 +187,12 @@ class Blog extends BaseModel
                     'is_show' => $is_show
                 );
             }
+            $page_url = [
+                'list_rows' => $limit,
+                'query' => ['cid' => $cid],
+            ];
             $list = $this
-                ->getPageBlogList($where, $limit);
+                ->getPageBlogList($where, $page_url);
             $extend = array(
                 'type' => 'cid',
                 'id' => $cid
@@ -198,14 +225,18 @@ class Blog extends BaseModel
      */
     public function hotArticle($limit = 10)
     {
-        $hot = $this::field('id,title,author,create_time')
+        $list = $this::field('id,title,author,create_time')
             ->withJoin('users', 'LEFT')
             ->hidden(['users'])
             ->order('click', 'desc')
             ->limit($limit)
             ->select();
+        foreach($list as $k=>$v){
+            $list[$k]['pic_path'] = $this->blog_pic->getDataByAid($v['id']);
+            $list[$k]['url'] = url('index/detail', array('id' => $v['id']));
+        }
 
-        return $hot;
+        return $list;
     }
 
     /****
@@ -228,12 +259,24 @@ class Blog extends BaseModel
             ->where($map)
             ->order('id', 'desc')
             ->select();
+        foreach($recommend as $k=>$v){
+            $recommend[$k]['pic_path'] = $this->blog_pic->getDataByAid($v['id']);
+            $recommend[$k]['url'] = url('index/detail', array('id' => $v['id']));
+        }
+
 
         return $recommend;
 
     }
 
-    // 传递搜索词获取数据
+    /******
+     *  传递搜索词获取数据
+     * @param $search
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function getDataByTitle($search)
     {
         $list = $this::withJoin('users', 'LEFT')
@@ -255,8 +298,16 @@ class Blog extends BaseModel
         );
         return $data;
     }
-    // 传递cid获得此分类下面的文章数据
-    // is_all为true时获取全部数据 false时不获取is_show为0 和is_delete为1的数据
+    /****
+     * 传递cid获得此分类下面的文章数据
+     * is_all为true时获取全部数据 false时不获取is_show为0 和is_delete为1的数据
+     * @param $cid
+     * @param false $is_all
+     * @return \think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function getDataByCid($cid, $is_all = false)
     {
         if ($is_all) {
@@ -271,6 +322,12 @@ class Blog extends BaseModel
         }
     }
 
+    /******
+     * 删除数据
+     * @param array $map
+     * @param false $type
+     * @return bool|int
+     */
     public function deleteData($map, $type = false)
     {
         if ($type == true) {
@@ -283,7 +340,7 @@ class Blog extends BaseModel
         return parent::deleteData($map, $type);
     }
 
-    protected function getPageBlogList($where, $limit)
+    protected function getPageBlogList($where, $limit, $each = null)
     {
         return $this::withJoin('users', 'LEFT')
             ->hidden(['users'])
@@ -292,7 +349,12 @@ class Blog extends BaseModel
             ->paginate($limit);
     }
 
-    // 修改数据
+    /******
+     * 修改数据
+     * @param array $map
+     * @param array $data
+     * @return array|bool
+     */
     public function editData($map, $data)
     {
         $id = $map['id'];
@@ -335,7 +397,14 @@ class Blog extends BaseModel
         }
     }
 
-    //添加数据
+    /*******
+     * 添加数据
+     * @param array $data
+     * @return array|int
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function addData($data)
     {
         // 获取post数据
