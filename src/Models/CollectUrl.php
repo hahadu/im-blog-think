@@ -4,6 +4,7 @@
 namespace Hahadu\ImBlogThink\Models;
 
 
+use Hahadu\Helper\FilesHelper;
 use Hahadu\Helper\HttpHelper;
 use Hahadu\Helper\StringHelper;
 use Hahadu\ImBlogThink\Models\Category;
@@ -287,6 +288,72 @@ class CollectUrl extends BaseModel
         }
         return null;
     }
+
+    /*****
+     * 替换字符串
+     * @param string $query_string 查找字符串
+     * @param string $re_string 替换字符串
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function re_content($query_string,$re_string=''){
+
+        $select_data = $this->blog->select();
+        foreach ($select_data as $key => $data) {
+            $content = html_entity_decode($data->content);
+
+            $query_string = StringHelper::trans_utf8($query_string);
+
+            $re_string = StringHelper::trans_utf8($re_string);
+            if(mb_strpos($content,$query_string)){
+                $content = str_replace($query_string,$re_string,$content);
+                $re[$key] = $this->blog->where('id',$data->id)->save(['content'=>$content]);
+            }else{
+                $re[$key] = StringHelper::trans_utf8('没有找到需要替换的内容');
+            }
+        }
+        return $re;
+    }
+
+    /****
+     * 下载图片到本地
+     */
+    public function download_pics()
+    {
+        $blog_pic = new BlogPic();
+
+        //文章图片信息
+        $pic_path = $blog_pic->column('path,aid');
+
+        foreach ($pic_path as $key => $value) {
+            if (!file_exists($value['path'])) {
+                if (false === mb_strpos($value['path'], 'http')) {
+                    //文章采集地址
+                    $collect_host = $this->where('aid', $value['aid'])->value('page_url');
+                    if (null !== $collect_host) {
+                        //解析域名
+                        $collect_host_arr = parse_url($collect_host);
+                        $collect_host_name = $collect_host_arr['scheme'] . '://' . $collect_host_arr['host'];
+                        //资源地址
+                        $down_uri = $collect_host_name . $value['path'];
+                        //设置保存目录
+                        $file_name = pathinfo($down_uri, PATHINFO_BASENAME);
+                        $save_path = StringHelper::GetSubStr($down_uri, $collect_host_name . '/', $file_name);
+                        if (!is_dir($save_path)) {
+                            FilesHelper::mkdir($save_path);
+                        }
+                        $save_name[$key] = FilesHelper::download_file($down_uri, $save_path);
+                    }
+                }
+            } else {
+                $save_name[$key] = $value['path'];
+            }
+        }
+        return $save_name;
+    }
+
 
 
 }
