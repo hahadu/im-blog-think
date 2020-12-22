@@ -17,6 +17,7 @@
 
 namespace Hahadu\ImBlogThink\Models;
 
+use Hahadu\Helper\FilesHelper;
 use Hahadu\ImAdminThink\model\Users;
 use Hahadu\ImBlogThink\Models\BlogTag;
 use Hahadu\ImBlogThink\Models\BlogPic;
@@ -125,6 +126,7 @@ class Blog extends BaseModel
             $data['current']['category'] = current($this->category->getDataByCid($data['current']['cid'], 'cid,cid,cname,keywords'));
             $data['current']['content'] = preg_editor_image_path($data['current']['content']);
             $data['current']['username'] = $data['current']->hidden(['users'])->users->username;
+        //    $data['current']['user_avatar'] = $data['current']->hidden(['users'])->users->user_avatar;
         }
         return $data;
     }
@@ -263,10 +265,7 @@ class Blog extends BaseModel
             $recommend[$k]['pic_path'] = $this->blog_pic->getDataByAid($v['id']);
             $recommend[$k]['url'] = url('index/detail', array('id' => $v['id']));
         }
-
-
         return $recommend;
-
     }
 
     /******
@@ -465,6 +464,45 @@ class Blog extends BaseModel
             return wrap_msg_array(420002, '创建失败');
         }
 
+    }
+
+    /****
+     * 传递pid 获取pid下面所有cid文章数据
+     * @param int $pid
+     * @param false $is_all
+     */
+    public function getDataByPid($pid)
+    {
+        $_cid = $this->category->where('pid',$pid)->column('cid');
+        $_cid = implode(',',$_cid);
+        $list = $this::where('cid','in',$_cid)->order('create_time','desc')->limit(10)->select();
+        foreach ($list as $k=>$v) {
+            $list[$k]['tag']=$this->blog_tag->getDataByAid($v['id'],'all')->toArray();
+            $list[$k]['pic_path']=$this->blog_pic->getDataByAid($v['id']);
+            $list[$k]['category']=current($this->category->getDataByCid($v['cid'],'cid,cid,cname'));
+            $v['content']=preg_editor_image_path($v['content']);
+            $list[$k]['content']=htmlspecialchars($v['content']);
+            $list[$k]['url']=url('index/detail',array('id'=>$v['id']));
+        }
+        return $list;
+    }
+
+    /*****
+     * 创建单个文章二维码
+     * @param $id 文章id
+     * @param string $pathInfo 路由地址
+     * @param string $path 文件保存路径
+     * @return mixed|string
+     */
+    public function detailQrcode($id,$pathInfo='index/detail',$path='upload/detail/'){
+        $url = request()->domain() . url($pathInfo,['id'=>$id]);
+        $filename = 'qrcode_'.$id.'.png';
+        if(!file_exists($path.$filename)){
+            FilesHelper::mkdir($path);
+            return create_qrcode($url,300,$path.$filename);
+        }else{
+            return '/'.$path.$filename;
+        }
     }
 
 
