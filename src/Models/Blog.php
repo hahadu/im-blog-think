@@ -383,6 +383,7 @@ class Blog extends BaseModel
                 ];
                 $this->blog_tag->addData($tag_data);
             }
+        //    $this->blog_pic->where(['aid' => $id])->delete();
             $this->blog_pic->deleteData(['aid' => $id]);
             $pic_data = [
                 'aid' => $id,
