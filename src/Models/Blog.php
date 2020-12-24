@@ -293,10 +293,11 @@ class Blog extends BaseModel
         $page = $list->render();
         $data = array(
             'page' => $page,
-            'list' => $list
+            'list' => $list,
         );
         return $data;
     }
+
     /****
      * 传递cid获得此分类下面的文章数据
      * is_all为true时获取全部数据 false时不获取is_show为0 和is_delete为1的数据
@@ -333,7 +334,6 @@ class Blog extends BaseModel
             $d_aid = [
                 'aid' => $map['id']
             ];
-            $this->blog_pic->deleteData($d_aid);
             $this->blog_tag->deleteData($d_aid);
         }
         return parent::deleteData($map, $type);
@@ -383,8 +383,7 @@ class Blog extends BaseModel
                 ];
                 $this->blog_tag->addData($tag_data);
             }
-        //    $this->blog_pic->where(['aid' => $id])->delete();
-            $this->blog_pic->deleteData(['aid' => $id]);
+            $this->blog_pic->where($aid)->delete();
             $pic_data = [
                 'aid' => $id,
                 'image_path' => $data['image_path']

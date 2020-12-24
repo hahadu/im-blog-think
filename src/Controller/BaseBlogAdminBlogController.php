@@ -56,6 +56,7 @@ class BaseBlogAdminBlogController extends AdminBaseController
     public function delete(){
         if(request()->isGet()){
             $data['id'] = request()->param('id');
+            //dump($data);
             return $this->blog->deleteData($data);
         }
         return 0;
@@ -70,7 +71,7 @@ class BaseBlogAdminBlogController extends AdminBaseController
         // 获取post数据
         // 反转义为下文的 preg_replace使用
         $data['content']=htmlspecialchars_decode($data['content']);
-        if(isset($data['author'])){
+        if(!isset($data['author'])){
             $data['author'] = get_user('id');
         }
         // 判断是否修改文章中图片的默认的alt 和title
