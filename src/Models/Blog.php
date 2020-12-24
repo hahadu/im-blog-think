@@ -336,7 +336,7 @@ class Blog extends BaseModel
             ];
             $this->blog_tag->deleteData($d_aid);
         }
-        return parent::deleteData($map, $type);
+        return $this::destroy($map['id'],$type);
     }
 
     protected function getPageBlogList($where, $limit, $each = null)
@@ -450,12 +450,14 @@ class Blog extends BaseModel
                     ->order('create_time desc')
                     ->select();
                 // 生成sitemap文件
+                /*
                 $sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<urlset>\r\n";
                 foreach ($list as $k => $v) {
                     $sitemap .= "    <url>\r\n" . "        <loc>" . url('index/detail', array('id' => $v['id']), '', true) . "</loc>\r\n" . "        <lastmod>" . $v['create_time'] . "</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
                 }
                 $sitemap .= '</urlset>';
                 file_put_contents('./sitemap.xml', $sitemap);
+                */
                 return wrap_msg_array(100012, '文章添加成功', ['aid' => $id]);
             } else {
                 return wrap_msg_array(420001, '文章添加失败');
@@ -504,6 +506,7 @@ class Blog extends BaseModel
             return '/'.$path.$filename;
         }
     }
+
 
 
 }

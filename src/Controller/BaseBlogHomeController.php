@@ -17,6 +17,7 @@
 
 namespace Hahadu\ImBlogThink\Controller;
 use think\App;
+use think\facade\Config;
 use think\facade\Db;
 
 
@@ -157,6 +158,22 @@ class BaseBlogHomeController extends BaseBlogController
         return $result;
     }
 
+    /*****
+     * sitemap
+     * @return \think\response\Xml
+     */
+    public function sitemap(){
+        Config::set(['datetime_format'=>'Y-m-d H:i:s'],'database');
+        $list = $this->blog->order('id','desc')->field('id,create_time,update_time')->select();
+
+        $sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<urlset>\r\n";
+        foreach ($list as $k => $v) {
+            $sitemap .= "    <url>\r\n" . "        <loc>" . url('index/detail', array('id' => $v['id']), '', true) . "</loc>\r\n" . "        <lastmod>" . $v['update_time'] . "</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
+        }
+        $sitemap .= '</urlset>';
+
+        return xml($sitemap);
+    }
 
 
 }
