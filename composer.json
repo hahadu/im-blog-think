@@ -1,6 +1,6 @@
 {
     "name": "hahadu/im-blog-think",
-    "description": "thinkphpAdmin后台管理模块",
+    "description": "thinkphpBlog模块",
     "type": "think-extend",
     "keywords": [
         "framework",
