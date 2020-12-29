@@ -168,7 +168,7 @@ class BaseBlogHomeController extends BaseBlogController
 
         $sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<urlset>\r\n";
         foreach ($list as $k => $v) {
-            $sitemap .= "    <url>\r\n" . "        <loc>" . url('index/detail', array('id' => $v['id']), '', true) . "</loc>\r\n" . "        <lastmod>" . $v['update_time'] . "</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
+            $sitemap .= "    <url>\r\n" . "        <loc>" . url('index/detail', array('id' => $v['id']), '', true)->suffix(true) . "</loc>\r\n" . "        <lastmod>" . $v['update_time'] . "</lastmod>\r\n        <changefreq>weekly</changefreq>\r\n        <priority>0.8</priority>\r\n    </url>\r\n";
         }
         $sitemap .= '</urlset>';
 
